@@ -1,0 +1,9 @@
+#dna_sequence_json
+
+{
+    "gene_name": "" #assumption its one gene, otherwaise its a genome?
+    "transcript_id": "",
+    "transcript_accession": "",
+    "transcript_link": "",
+    "genomic_position": ""
+}

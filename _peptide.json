@@ -1,0 +1,10 @@
+#peptide_sequence_json
+
+{
+    "peptide_name": "",
+    "peptide_class": "",
+    "peptide_family": "",
+    "transcript_id": "",
+    "transcript_accession": "",
+    "transcript_link": "",
+}

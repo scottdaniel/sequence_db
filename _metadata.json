@@ -1,0 +1,20 @@
+#sequence_json
+
+{
+    "file": "",
+    "md5": "",
+    "organism": "",
+    "taxonomy": {
+        "domain": "",
+        "kingdom": "",
+        "phylum": "",
+        "class": "",
+        "order": "",
+        "genus": "",
+        "species": ""
+    }
+    "sequence_type": "", #genome,dna,rna,peptide
+    "sequence_category": "", #mutant,reference,derived,...
+    "associations": "", #[Broad,GDC,UKBB,PMBB,HMP,...]
+}
+
