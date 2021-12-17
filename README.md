@@ -16,11 +16,15 @@ What we want to feed into a database:
 * OR Sqlite database of metadata
 
 What it might look like in the folder:
-my_folder
-  \_ my.fasta
-  \_ metadata.json OR
-  \_ metadata.db
-
+```
+  my_folder
+    |
+     \_ my.fasta
+    |
+     \_ metadata.json OR
+    |
+     \_ metadata.db
+```
 Example commands:
 * list_sequences [db_name] : spits out the names of sequences
 * get_metadata [sequence_name] : gives you metadata for a given sequence
