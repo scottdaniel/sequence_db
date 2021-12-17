@@ -39,9 +39,9 @@ Tasks:
 
 To work on this package, you'll need Python >= 3.7 installed. The
 easiest way to manage Python versions is with `conda`. To make a new
-environment with Python 3.7, use
+environment with Python 3.7 and pytest, use
 
-    conda create -n sequence_db python=3.7
+    conda create -n sequence_db python=3.7 pytest
 
 After the environment is installed, activate it with
 
@@ -55,12 +55,6 @@ mode. Working from this directory, use the command
 
     pip install -e .
 
-To run the tests, you'll need to have `pytest` installed. With your
-`sequence_db` environment activated, you can install the library with
-`pip`:
-
-    pip install pytest
-
-Then, use the following command to run the tests:
+To run the tests, use the following command:
 
     pytest
