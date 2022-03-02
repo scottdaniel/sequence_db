@@ -33,10 +33,9 @@ Example commands:
 * update_metadata [your_db] [sequence_name] [updated_data] : change a specific item of metadata
 * summarize_db [your_db] : gives statistics like # of sequences, # of metadata items, data created, date downloaded, etc.
 
-Tasks:
-2022-03-02
--When importing fasta/metadata, _put_ timestamps in the metadata itself {Kyle's idea}
--_Convert_ current functionality (creating a json of all the databases) into a subcommand 'catalog' {Scott's idea}
+Tasks (2022-03-02):
+* When importing fasta/metadata, _put_ timestamps in the metadata itself {Kyle's idea}
+* _Convert_ current functionality (creating a json of all the databases) into a subcommand 'catalog' {Scott's idea}
 
 ## Development
 
