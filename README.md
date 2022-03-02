@@ -34,10 +34,9 @@ Example commands:
 * summarize_db [your_db] : gives statistics like # of sequences, # of metadata items, data created, date downloaded, etc.
 
 Tasks:
-* Kyle will set up skeleton code for the python package
-* Scott will get a few sequences and metadata for testing
-* Brad will get started on metadata fields
-* Vince will start with import_db function once skeleton and test sequences are in place
+2022-03-02
+-When importing fasta/metadata, _put_ timestamps in the metadata itself {Kyle's idea}
+-_Convert_ current functionality (creating a json of all the databases) into a subcommand 'catalog' {Scott's idea}
 
 ## Development
 
