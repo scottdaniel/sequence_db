@@ -1,30 +1,17 @@
 from pathlib import Path
 
 class Database:
-    def __init__(self, db_from_fp, date):
+    def __init__(self, db_from_fp):
         self.db_fp = str(db_from_fp)
-        self.date_downloaded = date.strftime('%Y-%m-%d')
-        self.seq_len = self.parse_fasta(self.db_fp)
-        #self.copy_db(db_from_fp, dest)
 
     def get_db_path(self):
         print("DB path is {0}".format(self.db_fp))
 
-    def get_date(self):
-        print("Date is {0}".format(self.date_downloaded))
-
-    def print_headers_n_lengths(self):
-        print("Sequence lengths are {0}".format(self.seq_len))
-
-     #copy db to a location
- #   def copy_db(self, db_from_fp, dest):
-        #also change the timestamps?
- #       shutil.copy2(db_from_fp, dest)
- #       shutil.copy2(meta_from_fp, dest)
-
+    def get_dates(self):
+        print("Date created is {0}\nDate modified is {1}".format(self.date_created, self.date_modified))
 
     # Copied and modified from okfasta
-    def parse_fasta(self, s):
+    def get_lengths(self):
         """Parse a FASTA format file.
         Parameters
         ----------
@@ -37,7 +24,7 @@ class Database:
         """
         headers_count = 0
         headers_dict = {}
-        with Path(s).open() as f:
+        with Path(self.db_fp).open() as f:
             for line in f:
                 line = line.strip()
                 if line.startswith(">"):

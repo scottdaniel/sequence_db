@@ -48,8 +48,7 @@ def main(argv=None):
         else:
             db_date = args.date
 
-        db = Database(db_path, db_date)
-        db.print_headers_n_lengths()
+        db = Database(db_path)
 
         # put metadata file in my_db if not specified
         if not args.import_meta:
@@ -59,7 +58,7 @@ def main(argv=None):
         else:
             meta_path = Path(args.import_meta.name).resolve()
             meta = Metadata(meta_path)
-            meta.read_db(db)
+            meta.load_meta()
 
         if not json_fp.exists():
             with json_fp.open(mode='w') as j_write:
