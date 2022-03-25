@@ -5,29 +5,40 @@ import json
 from pathlib import Path
 from .db import Database
 from .meta import Metadata
+from .extract import extract
+
+def extract_subcommand(args):
+    print(args)
+    extract(args.dbname, args.fasta, args.meta, args.date)
+
+def catalog_subcommand(args):
+    print(args)
 
 def main(argv=None):
-    p = argparse.ArgumentParser()
-    p.add_argument("dbname", help="Name of the database")
-    p.add_argument("--import_db", type=argparse.FileType("r"),
+    main_parser = argparse.ArgumentParser()
+    subparsers = main_parser.add_subparsers(help='Subcommands')
+
+    extract_subparser = subparsers.add_parser(
+        "extract", help="Extract information from a fasta file and creates metadata for it.")
+
+    extract_subparser.add_argument("--dbname", help="Name of the database, default is the filename without an extension", default=Path(args.fasta).stem)
+    extract_subparser.add_argument("--fasta", type=argparse.FileType("r"),
         help=(
-            "Filepath of database. Example is example_urease.fa"))
-    p.add_argument("--import_meta", type=argparse.FileType("r"),
+            "Filepath of fasta. Example is example_urease.fa"))
+    extract_subparser.add_argument("--meta", type=argparse.FileType("r"),
         help=(
             "Filepath of metadata. Example is example_metadata.txt"))
-    p.add_argument("--date", type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
+    extract_subparser.add_argument("--date", type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
         help=(
-            "Date when database was downloaded in YYYY-MM-DD format. Default is to use modified date"))
-    p.add_argument("--db_fp",
-        help=(
-            "Place to store the databases and metadata"))
-    args = p.parse_args(argv)
+            "Date when database was downloaded in YYYY-MM-DD format. Default is to use created date"))
+
+    extract_subparser.set_defaults(func=extract_subcommand)
+
+    args = main_parser.parse_args(argv)
+    args.func(args)
 
     #if (args.import_db and not args.import_meta) or (args.import_meta and not args.import_db):
     #    p.error("Arguments --import_db and --import_meta must occur together")
-
-    if args.date and not args.import_db:
-        p.error("You cannot provide a date without a db")
 
     if args.db_fp is None:
         db_fp = Path(__file__).resolve().parents[2] / 'my_db'
@@ -84,8 +95,3 @@ def main(argv=None):
         raise FileNotFoundError("DB JSON does not exist yet. Import a database first")
         
     print("Database is {0}".format(args.dbname))
-
-# Subcommands
-def importdb_subcommand(args):
-    seqs = parse_fasta(args.input)
-    db = Database(args)
