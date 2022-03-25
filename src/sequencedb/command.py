@@ -3,7 +3,8 @@ import datetime
 import os
 import json
 from pathlib import Path
-from sequencedb.db import Database
+from .db import Database
+from .meta import Metadata
 
 def main(argv=None):
     p = argparse.ArgumentParser()
@@ -22,8 +23,8 @@ def main(argv=None):
             "Place to store the databases and metadata"))
     args = p.parse_args(argv)
 
-    if (args.import_db and not args.import_meta) or (args.import_meta and not args.import_db):
-        p.error("Arguments --import_db and --import_meta must occur together")
+    #if (args.import_db and not args.import_meta) or (args.import_meta and not args.import_db):
+    #    p.error("Arguments --import_db and --import_meta must occur together")
 
     if args.date and not args.import_db:
         p.error("You cannot provide a date without a db")
@@ -39,9 +40,7 @@ def main(argv=None):
     json_fp = Path(db_fp / 'db.json')
 
     if args.import_db:
-        db_path = Path(args.import_db.name)
-        meta_path = Path(args.import_meta.name)
-        print("Copying db {0} and metdata {1} to {2}".format(db_path.name, meta_path.name, db_fp))
+        db_path = Path(args.import_db.name).resolve()
 
         if args.date is None:
             mod_date = os.path.getmtime(db_path)
@@ -49,22 +48,33 @@ def main(argv=None):
         else:
             db_date = args.date
 
-        db = Database(db_path, meta_path, db_date, db_fp)
+        db = Database(db_path, db_date)
+        db.print_headers_n_lengths()
+
+        # put metadata file in my_db if not specified
+        if not args.import_meta:
+            meta_path = Path(__file__).resolve().parents[2] / 'my_db' / Path(str(args.dbname + "_metadata.tsv"))
+            meta = Metadata(meta_path)
+            meta.write_meta_new(db)
+        else:
+            meta_path = Path(args.import_meta.name).resolve()
+            meta = Metadata(meta_path)
+            meta.read_db(db)
 
         if not json_fp.exists():
             with json_fp.open(mode='w') as j_write:
                 #get JSON items
-                db_json = {args.dbname : [db.__dict__]}
+                db_json = {args.dbname : [db.__dict__] + [meta.__dict__]}
                 json.dump(db_json, j_write, indent=4)
         else:
             with json_fp.open(mode='r+') as j_append:
                 # First we load existing data into a dict
                 j_data = json.load(j_append)
                 if args.dbname in j_data:
-                    raise BaseException("DB already exists. Do you want to update it?")
+                    raise Exception("DB already exists. Do you want to update it?")
                 else:
                     # Join new_data with file_data
-                    j_data[args.dbname] = [db.__dict__]
+                    j_data[args.dbname] = [db.__dict__] + [meta.__dict__]
                     # Sets file's current position at offset
                     j_append.seek(0)
                     # convert back to json.
@@ -74,3 +84,8 @@ def main(argv=None):
         raise FileNotFoundError("DB JSON does not exist yet. Import a database first")
         
     print("Database is {0}".format(args.dbname))
+
+# Subcommands
+def importdb_subcommand(args):
+    seqs = parse_fasta(args.input)
+    db = Database(args)
