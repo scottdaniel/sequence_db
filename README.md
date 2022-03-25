@@ -36,6 +36,25 @@ Example commands:
 Tasks (2022-03-02):
 * When importing fasta/metadata, _put_ timestamps in the metadata itself {Kyle's idea}
 * _Convert_ current functionality (creating a json of all the databases) into a subcommand 'catalog' {Scott's idea}
+* Subcommands (2022-03-25):
+  * Import (just the db, metadata is optional)
+    * Get the lengths of the fasta sequences. Compare lengths of sequences to lengths in the metadata and update if not match
+    * Add date to the metadata if there is no date column in the metadata. If there is a date column in the metadata, check that the dates are the same. If not, update the date
+    * If no metadata is given, create a new metadata.tsv with the sequence headers as rows and length of sequence and date as columns
+  * Catalog
+    * Import all databases in a directory
+    * Generate json file with these attributes
+      * Name of the database
+      * Filepath of db
+      * Date created
+      * Number of sequences
+      * File size
+      * Type of file
+        * If .fasta extension, leave as "General FASTA"
+        * If .fna extension, "Nucleotide"
+        * If .faa extension, "Protein"
+  * Query
+    * Search through json file and return requested info (Latest date, largest db, etc)
 
 ## Development
 
