@@ -1,10 +1,7 @@
 import argparse
 import datetime
-import os
 import json
 from pathlib import Path
-from .db import Database
-from .meta import Metadata
 from .extract import extract
 
 def extract_subcommand(args):
@@ -50,46 +47,34 @@ def main(argv=None):
     #Get the filepath to the db json file
     json_fp = Path(db_fp / 'db.json')
 
-    if args.import_db:
-        db_path = Path(args.import_db.name).resolve()
+    # put metadata file in my_db if not specified
+    if not args.import_meta:
+        meta_path = Path(__file__).resolve().parents[2] / 'my_db' / Path(str(args.dbname + "_metadata.tsv"))
+        meta = Metadata(meta_path)
+        meta.write_meta_new(db)
+    else:
+        meta_path = Path(args.import_meta.name).resolve()
+        meta = Metadata(meta_path)
+        meta.read_db(db)
 
-        if args.date is None:
-            mod_date = os.path.getmtime(db_path)
-            db_date = datetime.datetime.fromtimestamp(mod_date)
-        else:
-            db_date = args.date
-
-        db = Database(db_path, db_date)
-        db.print_headers_n_lengths()
-
-        # put metadata file in my_db if not specified
-        if not args.import_meta:
-            meta_path = Path(__file__).resolve().parents[2] / 'my_db' / Path(str(args.dbname + "_metadata.tsv"))
-            meta = Metadata(meta_path)
-            meta.write_meta_new(db)
-        else:
-            meta_path = Path(args.import_meta.name).resolve()
-            meta = Metadata(meta_path)
-            meta.read_db(db)
-
-        if not json_fp.exists():
-            with json_fp.open(mode='w') as j_write:
-                #get JSON items
-                db_json = {args.dbname : [db.__dict__] + [meta.__dict__]}
-                json.dump(db_json, j_write, indent=4)
-        else:
-            with json_fp.open(mode='r+') as j_append:
-                # First we load existing data into a dict
-                j_data = json.load(j_append)
-                if args.dbname in j_data:
-                    raise Exception("DB already exists. Do you want to update it?")
-                else:
-                    # Join new_data with file_data
-                    j_data[args.dbname] = [db.__dict__] + [meta.__dict__]
-                    # Sets file's current position at offset
-                    j_append.seek(0)
-                    # convert back to json.
-                    json.dump(j_data, j_append, indent=4)
+    if not json_fp.exists():
+        with json_fp.open(mode='w') as j_write:
+            #get JSON items
+            db_json = {args.dbname : [db.__dict__] + [meta.__dict__]}
+            json.dump(db_json, j_write, indent=4)
+    else:
+        with json_fp.open(mode='r+') as j_append:
+            # First we load existing data into a dict
+            j_data = json.load(j_append)
+            if args.dbname in j_data:
+                raise Exception("DB already exists. Do you want to update it?")
+            else:
+                # Join new_data with file_data
+                j_data[args.dbname] = [db.__dict__] + [meta.__dict__]
+                # Sets file's current position at offset
+                j_append.seek(0)
+                # convert back to json.
+                json.dump(j_data, j_append, indent=4)
 
     if not json_fp.is_file():
         raise FileNotFoundError("DB JSON does not exist yet. Import a database first")
