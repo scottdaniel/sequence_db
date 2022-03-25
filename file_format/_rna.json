@@ -1,0 +1,9 @@
+#rna_sequence_json
+
+{
+    "rna_type": "", #cDNA,mRNA,rRNA,miRNA,...
+    "transcript_id": "",
+    "transcript_accession": "",
+    "transcript_link": "", #link to ncbi or whereever?
+    "polyA": "" #True,False
+}
