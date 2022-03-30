@@ -1,8 +1,9 @@
 from pathlib import Path
 
 class Database:
-    def __init__(self, db_from_fp):
+    def __init__(self, db_from_fp, date_created):
         self.db_fp = str(db_from_fp)
+        self.date_created = date_created
 
     def get_db_path(self):
         print("DB path is {0}".format(self.db_fp))

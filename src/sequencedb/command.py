@@ -18,7 +18,7 @@ def main(argv=None):
     extract_subparser = subparsers.add_parser(
         "extract", help="Extract information from a fasta file and creates metadata for it.")
 
-    extract_subparser.add_argument("--dbname", help="Name of the database, default is the filename without an extension", default=Path(args.fasta).stem)
+    extract_subparser.add_argument("--dbname", help="Name of the database, default is the filename without an extension", default="Default") #default=Path(args.fasta).stem)
     extract_subparser.add_argument("--fasta", type=argparse.FileType("r"),
         help=(
             "Filepath of fasta. Example is example_urease.fa"))
@@ -46,16 +46,6 @@ def main(argv=None):
 
     #Get the filepath to the db json file
     json_fp = Path(db_fp / 'db.json')
-
-    # put metadata file in my_db if not specified
-    if not args.import_meta:
-        meta_path = Path(__file__).resolve().parents[2] / 'my_db' / Path(str(args.dbname + "_metadata.tsv"))
-        meta = Metadata(meta_path)
-        meta.write_meta_new(db)
-    else:
-        meta_path = Path(args.import_meta.name).resolve()
-        meta = Metadata(meta_path)
-        meta.read_db(db)
 
     if not json_fp.exists():
         with json_fp.open(mode='w') as j_write:
