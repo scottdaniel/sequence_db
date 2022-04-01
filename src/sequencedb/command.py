@@ -1,5 +1,6 @@
 import argparse
 import datetime
+import sys
 from pathlib import Path
 from .extract import extract
 from .catalog import catalog
@@ -10,7 +11,7 @@ def extract_subcommand(args):
 
 def catalog_subcommand(args):
     print(args)
-    catalog(args.dirname)
+    catalog(args.dirname, args.catname)
 
 def dir_path(path):
     if Path.is_dir(path):
@@ -48,7 +49,19 @@ def main(argv=None):
     help="Directory where catalog will search for fasta files",
     default=Path.cwd())
 
+    catalog_subparser.add_argument("--catname",
+    help="Name of the catalog. json extensions will automatically be added",
+    default="sequence_catalog")
+
     catalog_subparser.set_defaults(func=catalog_subcommand)
 
+    #where the subcommand is detected
     args = main_parser.parse_args(argv)
+    
+    # print usage if user only enters the program name
+    if len(sys.argv) < 2:
+        main_parser.print_usage()
+        sys.exit(1)
+
+    #where the args are passed to the subcommand
     args.func(args)
