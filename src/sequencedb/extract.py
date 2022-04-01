@@ -17,4 +17,7 @@ def extract(dbname, fasta, meta, date):
     else:
         db_date = date
 
+    if dbname is None:
+        dbname = Path(fasta).stem
+
     db = Database(fasta_path, db_date)
