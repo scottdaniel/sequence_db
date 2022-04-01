@@ -1,23 +1,30 @@
-import os
 from pathlib import Path
 import datetime
 from .db import Database
 from .meta import Metadata
 
-def extract(dbname, fasta, meta, date):
-    if date and not fasta:
-        os.error("You cannot provide a date without a fasta file")
+def extract(fasta, dbname, date_m, metadata):
+    #get file paths
+    fasta_Path = Path(fasta.name)
+    fasta_fp = fasta_Path.resolve()
 
-    if fasta:
-        fasta_path = Path(fasta.name).resolve()
+    #set name of db
+    if not dbname:
+        dbname=Path(fasta.name).stem
 
-    if date is None:
-        create_date = os.path.getctime(fasta_path)
-        db_date = datetime.datetime.fromtimestamp(create_date)
+    #get modified date of file
+    if not date_m:
+        mod_date = fasta_Path.stat().st_mtime
+        date_modify = datetime.date.fromtimestamp(mod_date)
+
+    db = Database(dbname, fasta_fp, date_modify)
+
+    #create new metadata if not given; otherwise, check given metadata for any updates
+    if not metadata:
+        meta_path = fasta_fp.parents[0] / Path(str(dbname + "_metadata.tsv"))
+        meta = Metadata(meta_path)
+        meta.write_meta_new(db)
     else:
-        db_date = date
-
-    if dbname is None:
-        dbname = Path(fasta).stem
-
-    db = Database(fasta_path, db_date)
+        meta_path = Path(metadata.name).resolve()
+        meta = Metadata(meta_path)
+        meta.check_meta(db)

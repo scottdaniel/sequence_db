@@ -6,7 +6,7 @@ from .catalog import catalog
 
 def extract_subcommand(args):
     print(args)
-    extract(args.dbname, args.fasta, args.meta, args.date)
+    extract(args.fasta, args.dbname, args.date_m, args.metadata)
 
 def catalog_subcommand(args):
     print(args)
