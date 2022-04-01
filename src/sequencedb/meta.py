@@ -60,7 +60,7 @@ class Metadata:
                 sequence_lengths.pop(rows['fasta_header'])
 
             #write new sequences in sequence_lengths to the metadata
-            if sequence_lengths != {}: #just change this to != when fixed
+            if sequence_lengths != {}:
                 for id in sequence_lengths:
                     write_new_seq = id + "\t"*(len(self.optional_fields) + 1) + \
                                     str(sequence_lengths[id]) + "\t" + \
