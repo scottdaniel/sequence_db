@@ -4,26 +4,28 @@ import datetime
 from .db import Database
 from .meta import Metadata
 
-def extract(dbname, fasta, meta, date):
-    if not fasta:
-        raise Exception("You need to provide a fasta file")
+def extract(fasta, dbname, date_m, metadata):
+    #get file paths
+    fasta_Path = Path(fasta.name)
+    fasta_fp = fasta_Path.resolve()
 
-    fasta_path = Path(fasta.name).resolve()
+    #set name of db
+    if not dbname:
+        dbname=Path(fasta.name).stem
 
-    if date is None:
-        create_date = os.path.getctime(fasta_path)
-        db_date = datetime.datetime.fromtimestamp(create_date)
-    else:
-        db_date = date
+    #get modified date of file
+    if not date_m:
+        mod_date = fasta_Path.stat().st_mtime
+        date_modify = datetime.date.fromtimestamp(mod_date)
 
-    db = Database(fasta_path, db_date)
+    db = Database(dbname, fasta_fp, date_modify)
 
-    # put metadata file in my_db if not specified
-    if not args.import_meta:
-        meta_path = Path(__file__).resolve().parents[2] / 'my_db' / Path(str(args.dbname + "_metadata.tsv"))
+    #create new metadata if not given; otherwise, check given metadata for any updates
+    if not metadata:
+        meta_path = fasta_fp.parents[0] / Path(str(dbname + "_metadata.tsv"))
         meta = Metadata(meta_path)
         meta.write_meta_new(db)
     else:
-        meta_path = Path(args.import_meta.name).resolve()
+        meta_path = Path(metadata.name).resolve()
         meta = Metadata(meta_path)
-        meta.read_db(db)
+        meta.check_meta(db)

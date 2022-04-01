@@ -1,40 +1,33 @@
 from pathlib import Path
+import hashlib
 
 class Database:
-    def __init__(self, db_from_fp, date_created):
-        self.db_fp = str(db_from_fp)
-        self.date_created = date_created
+    def __init__(self, dbname, db_filepath, date_modified):
+        self.db_name = str(dbname)
+        self.db_fp = str(db_filepath)
+        self.date_modified = date_modified
+        #set file_hash only when parse_fasta is called
+        self.file_hash = hashlib.md5()
 
-    def get_db_path(self):
-        print("DB path is {0}".format(self.db_fp))
-
-    def get_dates(self):
-        print("Date created is {0}\nDate modified is {1}".format(self.date_created, self.date_modified))
-
-    # Copied and modified from okfasta
-    def get_lengths(self):
-        """Parse a FASTA format file.
-        Parameters
-        ----------
-        f : File object or iterator returning lines in FASTA format.
-        Returns
-        -------
-        An iterator of tuples containing two strings
-            First string is the sequence description, second is the
-            sequence.
-        """
+    #Read fasta and return a dictionary and md5sum
+    def parse_fasta(self):
         headers_count = 0
         headers_dict = {}
         with Path(self.db_fp).open() as f:
             for line in f:
+                #update md5sum for each line
+                self.file_hash.update(line.encode('UTF-8'))
                 line = line.strip()
                 if line.startswith(">"):
                     desc = line[1:]
                     headers_dict[desc] = 0
                     headers_count += 1
                 else:
+                    #throw error if first line does not start with ">"
+                    if headers_count == 0:
+                        raise Exception('The first line of your FASTA file does not being with ">"')
                     headers_dict[desc] += len(line)
         if len(headers_dict) < headers_count:
-            #how should entries be treated? Throwing error at the moment. Can possibly just rename the description
+            #Throw an error if there is a duplicate entry
             raise Exception('There are duplicates in the FASTA file')
         return headers_dict
