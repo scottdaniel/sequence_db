@@ -6,7 +6,7 @@ from .extract import extract
 
 def extract_subcommand(args):
     print(args)
-    extract(args.dbname, args.fasta, args.meta, args.date)
+    extract(args.fasta, args.dbname, args.date_m, args.metadata)
 
 def catalog_subcommand(args):
     print(args)
@@ -15,27 +15,23 @@ def main(argv=None):
     main_parser = argparse.ArgumentParser()
     subparsers = main_parser.add_subparsers(help='Subcommands')
 
-    extract_subparser = subparsers.add_parser(
-        "extract", help="Extract information from a fasta file and creates metadata for it.")
-
-    extract_subparser.add_argument("--dbname", help="Name of the database, default is the filename without an extension", default=Path(args.fasta).stem)
-    extract_subparser.add_argument("--fasta", type=argparse.FileType("r"),
-        help=(
-            "Filepath of fasta. Example is example_urease.fa"))
-    extract_subparser.add_argument("--meta", type=argparse.FileType("r"),
-        help=(
-            "Filepath of metadata. Example is example_metadata.txt"))
-    extract_subparser.add_argument("--date", type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
-        help=(
-            "Date when database was downloaded in YYYY-MM-DD format. Default is to use created date"))
+    extract_subparser = subparsers.add_parser("extract",
+        help="Extract information from a fasta file and create/update a metadata for each sequence")
+    extract_subparser.add_argument("fasta",
+        type=argparse.FileType("r"),
+        help="Fasta file. Example is example_urease.fa")
+    extract_subparser.add_argument("--dbname",
+        help="Name of the database, default is the filename without an extension")
+    extract_subparser.add_argument("--date_m", type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
+        help="Date (YYYY-MM-DD) of when the fasta file was last modified")
+    extract_subparser.add_argument("--metadata",
+        type=argparse.FileType("r"),
+        help="Metadata where each row is a fasta sequence. Example is example_metadata.txt")
 
     extract_subparser.set_defaults(func=extract_subcommand)
 
     args = main_parser.parse_args(argv)
     args.func(args)
-
-    #if (args.import_db and not args.import_meta) or (args.import_meta and not args.import_db):
-    #    p.error("Arguments --import_db and --import_meta must occur together")
 
     if args.db_fp is None:
         db_fp = Path(__file__).resolve().parents[2] / 'my_db'
@@ -46,16 +42,6 @@ def main(argv=None):
 
     #Get the filepath to the db json file
     json_fp = Path(db_fp / 'db.json')
-
-    # put metadata file in my_db if not specified
-    if not args.import_meta:
-        meta_path = Path(__file__).resolve().parents[2] / 'my_db' / Path(str(args.dbname + "_metadata.tsv"))
-        meta = Metadata(meta_path)
-        meta.write_meta_new(db)
-    else:
-        meta_path = Path(args.import_meta.name).resolve()
-        meta = Metadata(meta_path)
-        meta.read_db(db)
 
     if not json_fp.exists():
         with json_fp.open(mode='w') as j_write:
