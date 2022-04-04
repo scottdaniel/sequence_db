@@ -7,7 +7,7 @@ from .catalog import catalog
 
 def extract_subcommand(args):
     print(args)
-    extract(args.fasta, args.dbname, args.date_m, args.metadata)
+    extract(args.fasta, args.dbname, args.date, args.meta)
 
 def catalog_subcommand(args):
     print(args)
@@ -24,34 +24,43 @@ def main(argv=None):
     subparsers = main_parser.add_subparsers(help='Subcommands')
 
     extract_subparser = subparsers.add_parser(
-        "extract", help="Extract information from a fasta file and creates metadata for it.")
+        "extract",
+        help="Extract information from a fasta file and creates metadata for it.")
 
-    extract_subparser.add_argument("--dbname", help="Name of the database, default is the filename\
-        without an extension")
-    extract_subparser.add_argument("--fasta", type=argparse.FileType("r"),
-        help=(
-            "Filepath of fasta. Example is example_urease.fa"))
-    extract_subparser.add_argument("--meta", type=argparse.FileType("r"),
-        help=(
-            "Filepath of metadata. Example is example_metadata.txt"))
-    extract_subparser.add_argument("--date", type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
-        help=(
-            "Date when database was downloaded in YYYY-MM-DD format. Default is to use created date"))
+    extract_subparser.add_argument("--dbname",
+        help="Name of the database, default is the filename without an extension.")
+
+    extract_subparser.add_argument("--fasta",
+        type=argparse.FileType("r"),
+        help="Filepath of fasta. Example is example_urease.fa.")
+
+    extract_subparser.add_argument("--meta",
+        type=argparse.FileType("r"),
+        help=("Filepath of metadata. Example is example_metadata.txt.\
+        If one if not provided, it will be created.\
+        Must be in tab-separated format."))
+    
+    extract_subparser.add_argument("--date",
+        type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
+        help="Date when database was downloaded in YYYY-MM-DD format.\
+            Default is to use the file's modified date.")
 
     extract_subparser.set_defaults(func=extract_subcommand)
 
     catalog_subparser = subparsers.add_parser(
-        "catalog", help="Searches through subdirectories for fasta sequences,\
-            then builds a catalog of these with associated metadata"
+        "catalog",
+        help="Searches through subdirectories for fasta sequences,\
+        then builds a catalog of these with associated metadata."
     )
 
-    catalog_subparser.add_argument("--dirname", type=dir_path,
-    help="Directory where catalog will search for fasta files",
-    default=Path.cwd())
+    catalog_subparser.add_argument("--dirname",
+        type=dir_path,
+        help="Directory where catalog will search for fasta files.",
+        default=Path.cwd())
 
     catalog_subparser.add_argument("--catname",
-    help="Name of the catalog. json extensions will automatically be added",
-    default="sequence_catalog")
+        help="Name of the catalog. json extensions will automatically be added.",
+        default="sequence_catalog")
 
     catalog_subparser.set_defaults(func=catalog_subcommand)
 

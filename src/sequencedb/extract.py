@@ -14,8 +14,8 @@ def extract(fasta, dbname, date_m, metadata):
 
     #get modified date of file
     if not date_m:
-        mod_date = fasta_Path.stat().st_mtime
-        date_modify = datetime.date.fromtimestamp(mod_date)
+        mod_date_float = fasta_Path.stat().st_mtime
+        date_modify = datetime.date.fromtimestamp(mod_date_float)
 
     db = Database(dbname, fasta_fp, date_modify)
 
