@@ -1,0 +1,17 @@
+{
+    "example_reference": {
+        "dbname": "/Users/danielsg/sequence_db/example/example_reference.fa",
+        "data_modified": "2022-03-25",
+        "md5sum": "91dc0fce811cde480ff389c72dc0ff8f"
+    },
+    "example_urease": {
+        "dbname": "/Users/danielsg/sequence_db/example/example_urease.fasta",
+        "data_modified": "2022-03-25",
+        "md5sum": "8a544b61acc32731c148b95922e4edc2"
+    },
+    "example_mutated": {
+        "dbname": "/Users/danielsg/sequence_db/example/example_mutated.fna",
+        "data_modified": "2022-03-25",
+        "md5sum": "895fa63f6a9284c50e4fe5c1ebab4839"
+    }
+}
