@@ -131,3 +131,6 @@ dmypy.json
 
 # default db fp
 my_db/
+example/example_mutated_metadata.tsv
+example/example_reference_metadata.tsv
+example/example_urease_metadata.tsv
