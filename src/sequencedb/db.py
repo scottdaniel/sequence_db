@@ -31,3 +31,11 @@ class Database:
             #Throw an error if there is a duplicate entry
             raise Exception('There are duplicates in the FASTA file')
         return headers_dict
+
+    #convert everything to strings for storage in json or sqlite
+    def stringify(self):
+        db_name = self.db_name
+        db_fp = self.db_fp
+        date_modified = str(self.date_modified)
+        file_hash = str(self.file_hash.hexdigest())
+        return db_name, db_fp, date_modified, file_hash

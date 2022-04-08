@@ -28,3 +28,5 @@ def extract(fasta, dbname, date_m, metadata):
         meta_path = Path(metadata.name).resolve()
         meta = Metadata(meta_path)
         meta.check_meta(db)
+    
+    return db

@@ -4,13 +4,14 @@ import sys
 from pathlib import Path
 from .extract import extract
 from .catalog import catalog
+import logging
 
 def extract_subcommand(args):
-    print(args)
+    logging.debug(args)
     extract(args.fasta, args.dbname, args.date, args.meta)
 
 def catalog_subcommand(args):
-    print(args)
+    logging.debug(args)
     catalog(args.dirname, args.catname)
 
 def dir_path(path):
@@ -45,6 +46,9 @@ def main(argv=None):
         help="Date when database was downloaded in YYYY-MM-DD format.\
             Default is to use the file's modified date.")
 
+    extract_subparser.add_argument("-v", "--verbose", help="increase output verbosity",
+        action="store_true")
+
     extract_subparser.set_defaults(func=extract_subcommand)
 
     catalog_subparser = subparsers.add_parser(
@@ -62,10 +66,16 @@ def main(argv=None):
         help="Name of the catalog. json extensions will automatically be added.",
         default="sequence_catalog")
 
+    catalog_subparser.add_argument("-v", "--verbose", help="increase output verbosity",
+        action="store_true")
+
     catalog_subparser.set_defaults(func=catalog_subcommand)
 
     #where the subcommand is detected
     args = main_parser.parse_args(argv)
+
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
     
     # print usage if user only enters the program name
     if len(sys.argv) < 2:
