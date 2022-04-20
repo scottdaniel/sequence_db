@@ -4,10 +4,60 @@
         "data_modified": "2022-03-25",
         "md5sum": "91dc0fce811cde480ff389c72dc0ff8f"
     },
-    "example_urease": {
+    "example_reference": {
         "dbname": "/Users/danielsg/sequence_db/example/example_urease.fasta",
-        "data_modified": "2022-03-25",
+        "data_modified": "2022-04-20",
         "md5sum": "8a544b61acc32731c148b95922e4edc2"
+    },
+    "GCF_000007725.1_ASM772v1_cds_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000007725.1_ASM772v1_cds_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "5e11c059ed0cfe115fb0ea53d52688c9"
+    },
+    "GCF_000007725.1_ASM772v1_rna_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000007725.1_ASM772v1_rna_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "b60f9740558662d16e8bb6c92803d2c8"
+    },
+    "GCF_000008865.2_ASM886v2_cds_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000008865.2_ASM886v2_cds_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "4a3e5a23ed3e64a9a86aad7556002847"
+    },
+    "GCF_000008865.2_ASM886v2_rna_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000008865.2_ASM886v2_rna_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "a085ef96c2a9577a22ff344ba35967da"
+    },
+    "GCF_000010505.1_ASM1050v1_cds_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000010505.1_ASM1050v1_cds_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "f375941e20c14ca8f5ebbdc182b75aca"
+    },
+    "GCF_000010505.1_ASM1050v1_rna_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000010505.1_ASM1050v1_rna_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "0a054b886ec58d627e5a3a08ae764480"
+    },
+    "GCF_000010525.1_ASM1052v1_cds_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000010525.1_ASM1052v1_cds_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "8447f0bbd72d4b36804b77b7ae1aa2a9"
+    },
+    "GCF_000010525.1_ASM1052v1_rna_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000010525.1_ASM1052v1_rna_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "86f5234fc68324d4bacd43561543630d"
+    },
+    "GCF_000012885.1_ASM1288v1_cds_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000012885.1_ASM1288v1_cds_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "6179251f5e7d85c923c778a276cbdac5"
+    },
+    "GCF_000012885.1_ASM1288v1_rna_from_genomic": {
+        "dbname": "/Users/danielsg/sequence_db/example/sample_fastas/GCF_000012885.1_ASM1288v1_rna_from_genomic.fasta",
+        "data_modified": "2022-04-20",
+        "md5sum": "f1412b08108a6bb74fcd1bef43d3fdeb"
     },
     "example_mutated": {
         "dbname": "/Users/danielsg/sequence_db/example/example_mutated.fna",
