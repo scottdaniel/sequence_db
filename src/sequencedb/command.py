@@ -4,6 +4,7 @@ import sys
 from pathlib import Path
 from .extract import extract
 from .catalog import catalog
+from .query import query
 import logging
 
 def extract_subcommand(args):
@@ -12,7 +13,11 @@ def extract_subcommand(args):
 
 def catalog_subcommand(args):
     logging.debug(args)
-    catalog(args.dirname, args.catname)
+    catalog(args.dirname, args.catname, args.overwrite)
+
+def query_subcommand(args):
+    logging.debug(args)
+    query(args.name, args.catalog)
 
 def dir_path(path):
     if Path.is_dir(path):
@@ -66,10 +71,32 @@ def main(argv=None):
         help="Name of the catalog. json extensions will automatically be added.",
         default="sequence_catalog")
 
+    catalog_subparser.add_argument("--overwrite",
+        help="Boolean value to overwrite existing catalog.",
+        action="store_true")
+
     catalog_subparser.add_argument("-v", "--verbose", help="increase output verbosity",
         action="store_true")
 
     catalog_subparser.set_defaults(func=catalog_subcommand)
+
+    query_subparser = subparsers.add_parser(
+        "query",
+        help="Queries a catalog built by the subcommand"
+    )
+
+    query_subparser.add_argument("--name",
+    help="Name of the fasta db you want information about.")
+
+    query_subparser.add_argument("--catalog",
+        help="Path to the catalog.",
+        type=argparse.FileType("r"),
+        default="sequence_catalog.json")
+
+    query_subparser.add_argument("-v", "--verbose", help="increase output verbosity",
+        action="store_true")
+
+    query_subparser.set_defaults(func=query_subcommand)
 
     #where the subcommand is detected
     args = main_parser.parse_args(argv)

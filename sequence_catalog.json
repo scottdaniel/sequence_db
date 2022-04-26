@@ -4,9 +4,9 @@
         "data_modified": "2022-03-25",
         "md5sum": "91dc0fce811cde480ff389c72dc0ff8f"
     },
-    "example_reference": {
+    "example_urease": {
         "dbname": "/Users/danielsg/sequence_db/example/example_urease.fasta",
-        "data_modified": "2022-04-20",
+        "data_modified": "2022-03-25",
         "md5sum": "8a544b61acc32731c148b95922e4edc2"
     },
     "GCF_000007725.1_ASM772v1_cds_from_genomic": {
@@ -61,7 +61,7 @@
     },
     "example_mutated": {
         "dbname": "/Users/danielsg/sequence_db/example/example_mutated.fna",
-        "data_modified": "2022-03-25",
+        "data_modified": "2022-04-26",
         "md5sum": "895fa63f6a9284c50e4fe5c1ebab4839"
     }
 }

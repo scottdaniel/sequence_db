@@ -7,7 +7,7 @@ from itertools import chain
 #list of accepted sequence extensions
 SEQEXT = ["fa", "fasta", "fna", "faa", "aa", "pep"]
 
-def catalog(dirname, catname):
+def catalog(dirname, catname, overwrite):
     #builds a list of fastas after walking through directories
     #using extract() to get pertinent information
     #dumps information into a json
@@ -38,8 +38,7 @@ def catalog(dirname, catname):
     catalog = {}
     
     #check if catalog already exists
-    #TODO: allow for overwriting of catalog
-    if not json_fp.exists():
+    if not json_fp.exists() or overwrite:
         with json_fp.open(mode='w') as j_write:
             #iterate through the list of lists
             for posix_path in chain.from_iterable(files_to_extract):
@@ -60,4 +59,4 @@ def catalog(dirname, catname):
                 print("Catalog found {length} sequences to write information about.".format(length=len(catalog)))
     else:
         raise Exception("Sequence catalog: {catalog!r} already exists.\n\
-            Cowardly refusing to overwrite.".format(catalog=str(json_fp)))
+            Cowardly refusing to overwrite (unless you specify --overwrite).".format(catalog=str(json_fp)))
