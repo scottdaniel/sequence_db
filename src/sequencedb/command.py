@@ -1,67 +1,112 @@
 import argparse
 import datetime
-import json
+import sys
 from pathlib import Path
 from .extract import extract
+from .catalog import catalog
+from .query import query
+import logging
 
 def extract_subcommand(args):
-    print(args)
+    logging.debug(args)
     extract(args.fasta, args.dbname, args.date_m, args.metadata)
 
 def catalog_subcommand(args):
-    print(args)
+    logging.debug(args)
+    catalog(args.dirname, args.catname, args.overwrite)
+
+def query_subcommand(args):
+    logging.debug(args)
+    query(args.name, args.catalog)
+
+def dir_path(path):
+    if Path.is_dir(path):
+        return path
+    else:
+        raise argparse.ArgumentTypeError(f"readable_dir:{path} is not a valid path")
 
 def main(argv=None):
     main_parser = argparse.ArgumentParser()
     subparsers = main_parser.add_subparsers(help='Subcommands')
 
-    extract_subparser = subparsers.add_parser("extract",
-        help="Extract information from a fasta file and create/update a metadata for each sequence")
+    extract_subparser = subparsers.add_parser(
+        "extract",
+        help="Extract information from a fasta file and creates metadata for it.")
+
     extract_subparser.add_argument("fasta",
         type=argparse.FileType("r"),
-        help="Fasta file. Example is example_urease.fa")
+        help="Filepath of fasta. Example is example_urease.fa.")
+
     extract_subparser.add_argument("--dbname",
-        help="Name of the database, default is the filename without an extension")
-    extract_subparser.add_argument("--date_m", type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
-        help="Date (YYYY-MM-DD) of when the fasta file was last modified")
+        help="Name of the database, default is the filename without an extension.")
+
+    extract_subparser.add_argument("--date_m",
+        type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
+        help="Date when database was downloaded in YYYY-MM-DD format.\
+            Default is to use the file's modified date.")
+
     extract_subparser.add_argument("--metadata",
-        help="Name of metadata file to create/update where each row is a fasta sequence. Example is example_metadata.txt")
+        help=("Filepath of metadata. Example is example_metadata.txt.\
+        If one if not provided, it will be created.\
+        Must be in tab-separated format."))
+
+    extract_subparser.add_argument("-v", "--verbose", help="increase output verbosity",
+        action="store_true")
 
     extract_subparser.set_defaults(func=extract_subcommand)
 
+    catalog_subparser = subparsers.add_parser(
+        "catalog",
+        help="Searches through subdirectories for fasta sequences,\
+        then builds a catalog of these with associated metadata."
+    )
+
+    catalog_subparser.add_argument("--dirname",
+        type=dir_path,
+        help="Directory where catalog will search for fasta files.",
+        default=Path.cwd())
+
+    catalog_subparser.add_argument("--catname",
+        help="Name of the catalog. json extensions will automatically be added.",
+        default="sequence_catalog")
+
+    catalog_subparser.add_argument("--overwrite",
+        help="Boolean value to overwrite existing catalog.",
+        action="store_true")
+
+    catalog_subparser.add_argument("-v", "--verbose", help="increase output verbosity",
+        action="store_true")
+
+    catalog_subparser.set_defaults(func=catalog_subcommand)
+
+    query_subparser = subparsers.add_parser(
+        "query",
+        help="Queries a catalog built by the subcommand"
+    )
+
+    query_subparser.add_argument("--name",
+    help="Name of the fasta db you want information about.")
+
+    query_subparser.add_argument("--catalog",
+        help="Path to the catalog.",
+        type=argparse.FileType("r"),
+        default="sequence_catalog.json")
+
+    query_subparser.add_argument("-v", "--verbose", help="increase output verbosity",
+        action="store_true")
+
+    query_subparser.set_defaults(func=query_subcommand)
+
+    #where the subcommand is detected
     args = main_parser.parse_args(argv)
+
+    if args.verbose:
+        logging.basicConfig(level=logging.DEBUG)
+    
+    # print usage if user only enters the program name
+    if len(sys.argv) < 2:
+        main_parser.print_usage()
+        sys.exit(1)
+
+    #where the args are passed to the subcommand
     args.func(args)
-
-    if args.db_fp is None:
-        db_fp = Path(__file__).resolve().parents[2] / 'my_db'
-    else:
-        db_fp = Path(args.db_fp)
-
-    db_fp.mkdir(parents=True, exist_ok=True)
-
-    #Get the filepath to the db json file
-    json_fp = Path(db_fp / 'db.json')
-
-    if not json_fp.exists():
-        with json_fp.open(mode='w') as j_write:
-            #get JSON items
-            db_json = {args.dbname : [db.__dict__] + [meta.__dict__]}
-            json.dump(db_json, j_write, indent=4)
-    else:
-        with json_fp.open(mode='r+') as j_append:
-            # First we load existing data into a dict
-            j_data = json.load(j_append)
-            if args.dbname in j_data:
-                raise Exception("DB already exists. Do you want to update it?")
-            else:
-                # Join new_data with file_data
-                j_data[args.dbname] = [db.__dict__] + [meta.__dict__]
-                # Sets file's current position at offset
-                j_append.seek(0)
-                # convert back to json.
-                json.dump(j_data, j_append, indent=4)
-
-    if not json_fp.is_file():
-        raise FileNotFoundError("DB JSON does not exist yet. Import a database first")
-        
-    print("Database is {0}".format(args.dbname))
