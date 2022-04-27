@@ -25,8 +25,7 @@ def main(argv=None):
     extract_subparser.add_argument("--date_m", type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
         help="Date (YYYY-MM-DD) of when the fasta file was last modified")
     extract_subparser.add_argument("--metadata",
-        type=argparse.FileType("r"),
-        help="Metadata where each row is a fasta sequence. Example is example_metadata.txt")
+        help="Name of metadata file to create/update where each row is a fasta sequence. Example is example_metadata.txt")
 
     extract_subparser.set_defaults(func=extract_subcommand)
 
