@@ -48,11 +48,19 @@ class Metadata:
                 if rows['fasta_header'] not in sequence_lengths:
                     continue
 
+                #if date column exists, check the date and only update the this date if the sequence changes (by length)
+                #this part not tested
+                date2write = str(db.date_modified)
+                if 'date_modified' in rows:
+                    if rows['length'] == str(sequence_lengths[rows['fasta_header']]):
+                        date2write = rows['date_modified']
+
                 write_row = rows['fasta_header'] + "\t"*(len(self.optional_fields) > 0)+ \
                             "\t".join([rows[o] for o in self.optional_fields]) + "\t" + \
                             str(sequence_lengths[rows['fasta_header']]) + "\t" + \
                             str(db.file_hash.hexdigest()) + "\t" + \
-                            str(db.date_modified) + "\n"
+                            date2write + "\n"
+
                 #write metadata rows out
                 write_h.write(write_row)
 

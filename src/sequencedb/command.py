@@ -9,7 +9,7 @@ import logging
 
 def extract_subcommand(args):
     logging.debug(args)
-    extract(args.fasta, args.dbname, args.date, args.meta)
+    extract(args.fasta, args.dbname, args.date_m, args.metadata)
 
 def catalog_subcommand(args):
     logging.debug(args)
@@ -33,23 +33,22 @@ def main(argv=None):
         "extract",
         help="Extract information from a fasta file and creates metadata for it.")
 
-    extract_subparser.add_argument("--dbname",
-        help="Name of the database, default is the filename without an extension.")
-
-    extract_subparser.add_argument("--fasta",
+    extract_subparser.add_argument("fasta",
         type=argparse.FileType("r"),
         help="Filepath of fasta. Example is example_urease.fa.")
 
-    extract_subparser.add_argument("--meta",
-        type=argparse.FileType("r"),
-        help=("Filepath of metadata. Example is example_metadata.txt.\
-        If one if not provided, it will be created.\
-        Must be in tab-separated format."))
-    
-    extract_subparser.add_argument("--date",
+    extract_subparser.add_argument("--dbname",
+        help="Name of the database, default is the filename without an extension.")
+
+    extract_subparser.add_argument("--date_m",
         type=lambda s: datetime.datetime.strptime(s, '%Y-%m-%d'),
         help="Date when database was downloaded in YYYY-MM-DD format.\
             Default is to use the file's modified date.")
+
+    extract_subparser.add_argument("--metadata",
+        help=("Filepath of metadata. Example is example_metadata.txt.\
+        If one if not provided, it will be created.\
+        Must be in tab-separated format."))
 
     extract_subparser.add_argument("-v", "--verbose", help="increase output verbosity",
         action="store_true")
